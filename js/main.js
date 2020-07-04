@@ -3,14 +3,26 @@
   const question = document.getElementById("question");
   const choices = document.getElementById("choices");
   const btn = document.getElementById("btn");
+  const result = document.getElementById("result");
+  const scoreLabel = document.querySelector("#result > p");
 
-  const quizSet = [
-    { q: "What is A?", c: ["A0", "A1", "A2"] },
-    { q: "What is B?", c: ["B0", "B1", "B2"] },
-    { q: "What is C?", c: ["C0", "C1", "C2"] },
-  ];
+  const quizSet = shuffle([
+    {
+      q: "イソップ寓話、続きが存在するものは？",
+      c: ["うさぎとかめ", "アリとキリギリス", "三匹のこぶた"],
+    },
+    {
+      q: "英語でそのまま発音して通じるのは？",
+      c: ["ジグザグ", "ギザギザ", "ビリビリ"],
+    },
+    {
+      q: "「急がば回れ」という言葉が生まれた舞台は？",
+      c: ["琵琶湖", "信濃川", "富士山"],
+    },
+  ]);
   let currentNum = 0;
   let isAnswered;
+  let score = 0;
 
   function shuffle(arr) {
     for (let i = arr.length - 1; i > 0; i--) {
@@ -27,6 +39,7 @@
     isAnswered = true;
     if (li.textContent === quizSet[currentNum].c[0]) {
       li.classList.add("correct");
+      score++;
     } else {
       li.classList.add("wrong");
     }
@@ -50,12 +63,25 @@
       });
       choices.appendChild(li);
     });
+    if (currentNum === quizSet.length - 1) {
+      btn.textContent = "Show Score";
+    }
   }
 
   setQuiz();
 
   btn.addEventListener("click", () => {
-    currentNum++;
-    setQuiz();
+    if (btn.classList.contains("disabled")) {
+      return;
+    }
+    btn.classList.add("disabled");
+
+    if (currentNum === quizSet.length - 1) {
+      scoreLabel.textContent = `Score: ${score} / ${quizSet.length}`;
+      result.classList.remove("hidden");
+    } else {
+      currentNum++;
+      setQuiz();
+    }
   });
 }
